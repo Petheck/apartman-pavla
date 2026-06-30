@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rezervácia — Apartmán PaVla</title>
+<meta name="description" content="Rezervácia pobytu v Apartmáne PaVla, Moravany nad Váhom. Vyberte termín, počet hostí a odošlite žiadosť.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ECEBE3; --paper:#F6F5EF; --white:#FCFBF7;
+    --forest:#33422F; --forest-d:#26321F; --moss:#6E7C57;
+    --silver:#8298A0; --silver-d:#5E767E; --bark:#5C4632;
+    --ink:#272620; --soft:#6B6A5E; --line:#D8D6CB; --line-soft:#E4E2D8;
+    --busy:#E2CFC9; --busy-ink:#9A6A5E; --free-h:#E4EADD;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg); color:var(--ink); font-family:'Figtree',sans-serif; -webkit-font-smoothing:antialiased;}
+  a{color:inherit; text-decoration:none;}
+  button{font-family:inherit; cursor:pointer; border:none; background:none;}
+  .wrap{max-width:1020px; margin:0 auto; padding:0 32px;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  @media (prefers-reduced-motion: reduce){ *{animation:none !important; transition:none !important;} }
+
+  header{border-bottom:1px solid var(--line); background:var(--paper);}
+  nav{display:flex; align-items:center; justify-content:space-between; padding:18px 32px; max-width:1020px; margin:0 auto;}
+  .brand{display:flex; flex-direction:column; line-height:1;}
+  .brand .nm{font-family:'Spectral',serif; font-size:20px; font-weight:600;}
+  .brand .loc{font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--soft); margin-top:4px;}
+  .back-home{font-size:14px; font-weight:500; color:var(--soft);}
+  .back-home:hover{color:var(--ink);}
+
+  .head{text-align:center; padding:52px 0 34px;}
+  .head .eyebrow{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--silver-d); margin-bottom:14px;}
+  .head h1{font-family:'Spectral',serif; font-size:clamp(32px,4.6vw,50px); font-weight:500; letter-spacing:-0.01em;}
+  .head h1 em{font-style:italic; color:var(--moss);}
+  .head p{font-size:16px; color:var(--soft); margin-top:14px;}
+
+  .steps{display:flex; justify-content:center; gap:8px; margin:0 auto 38px; flex-wrap:wrap;}
+  .pstep{display:flex; align-items:center; gap:9px; font-size:13px; font-weight:600; color:var(--soft); padding:8px 16px; border-radius:2px; background:var(--paper); border:1px solid var(--line);}
+  .pstep .pn{width:21px; height:21px; border-radius:50%; background:var(--bg); display:flex; align-items:center; justify-content:center; font-size:11px; font-family:'IBM Plex Mono',monospace;}
+  .pstep.active{border-color:var(--forest); color:var(--ink);}
+  .pstep.active .pn{background:var(--forest); color:var(--paper);}
+  .pstep.done .pn{background:var(--moss); color:var(--paper);}
+
+  .panel{background:var(--paper); border:1px solid var(--line); border-radius:4px; overflow:hidden; margin-bottom:80px;}
+  .pbody{padding:40px 44px;}
+  .pane{display:none;}
+  .pane.on{display:block; animation:fade .4s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(8px);}to{opacity:1; transform:none;}}
+  .flabel{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--soft); margin-bottom:16px; display:block;}
+
+  /* calendar */
+  .cal-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;}
+  .cal-nav{display:flex; gap:8px;}
+  .cal-nav button{width:38px; height:38px; border-radius:2px; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:17px; color:var(--ink); transition:border-color .2s;}
+  .cal-nav button:hover{border-color:var(--moss);}
+  .cal-wrap{display:grid; grid-template-columns:1fr 1fr; gap:38px;}
+  @media (max-width:760px){ .cal-wrap{grid-template-columns:1fr; gap:28px;} }
+  .cal-mtitle{font-family:'Spectral',serif; font-weight:500; font-size:18px; text-align:center; margin-bottom:14px;}
+  .cal-dow{display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:8px;}
+  .cal-dow span{text-align:center; font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--soft); text-transform:uppercase;}
+  .cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:4px;}
+  .cday{aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:13.5px; font-weight:500; border-radius:2px; cursor:pointer; transition:background .15s, color .15s;}
+  .cday.empty{cursor:default;}
+  .cday.past{color:#C2C0B6; cursor:not-allowed;}
+  .cday.busy{background:var(--busy); color:var(--busy-ink); cursor:not-allowed; text-decoration:line-through;}
+  .cday.free:hover{background:var(--free-h);}
+  .cday.sel-start,.cday.sel-end{background:var(--forest); color:var(--paper);}
+  .cday.in-range{background:var(--free-h);}
+  .cal-legend{display:flex; gap:20px; margin-top:22px; flex-wrap:wrap; font-size:12.5px; color:var(--soft);}
+  .cal-legend .lg{display:flex; align-items:center; gap:7px;}
+  .cal-legend .sw{width:13px; height:13px; border-radius:2px;}
+  .sw.free{background:var(--free-h);} .sw.busy{background:var(--busy);} .sw.sel{background:var(--forest);}
+  .sel-summary{margin-top:24px; padding:18px 20px; background:var(--bg); border-radius:3px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;}
+  .sel-summary .ss-d{font-weight:600; font-size:15px;} .sel-summary .ss-n{font-size:13.5px; color:var(--soft); margin-top:3px;}
+  .sel-summary button{font-size:13px; color:var(--soft);} .sel-summary button:hover{color:var(--ink);}
+
+  /* guests */
+  .cgroup{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
+  .cbox{border:1px solid var(--line); border-radius:3px; padding:22px; background:var(--bg);}
+  .crow{display:flex; align-items:center; justify-content:space-between;}
+  .crow .ct b{font-size:15.5px;} .crow .ct span{display:block; font-size:12.5px; color:var(--soft);}
+  .cc{display:flex; align-items:center; gap:14px;}
+  .cb{width:34px; height:34px; border-radius:50%; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:17px; color:var(--forest); transition:border-color .2s;}
+  .cb:hover{border-color:var(--moss);}
+  .cv{font-family:'Spectral',serif; font-size:22px; font-weight:500; min-width:26px; text-align:center;}
+  .price-note{margin-top:22px; padding:18px 20px; background:var(--forest); color:var(--paper); border-radius:3px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;}
+  .price-note .pl{font-size:13.5px; color:rgba(246,245,239,0.85);}
+  .price-note .pv{font-family:'Spectral',serif; font-size:26px; font-weight:500;}
+  .price-note .pv small{font-family:'Figtree'; font-size:13px; font-weight:400; color:rgba(246,245,239,0.7);}
+  @media (max-width:680px){ .cgroup{grid-template-columns:1fr;} }
+
+  /* contact */
+  .cgrid{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  .ibox{border:1px solid var(--line); border-radius:3px; padding:14px 16px; background:var(--bg); transition:border-color .2s;}
+  .ibox:focus-within{border-color:var(--moss);}
+  .ibox.full{grid-column:1/-1;}
+  .ibox label{display:block; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:var(--soft); margin-bottom:7px;}
+  .ibox input, .ibox textarea{border:none; outline:none; background:transparent; width:100%; font-family:inherit; font-size:15px; color:var(--ink); resize:none;}
+  @media (max-width:680px){ .cgrid{grid-template-columns:1fr;} }
+
+  /* summary */
+  .summary{border:1px solid var(--line); border-radius:3px; overflow:hidden;}
+  .srow{display:flex; justify-content:space-between; padding:15px 20px; border-bottom:1px solid var(--line-soft); font-size:14.5px;}
+  .srow:last-child{border-bottom:none;}
+  .srow.total{background:var(--bg);}
+  .srow .l{color:var(--soft);} .srow .v{font-weight:600;}
+  .srow.total .v{font-family:'Spectral',serif; font-size:20px; font-weight:600;}
+  .snote{font-size:13px; color:var(--soft); line-height:1.6; margin-top:18px; padding:14px 16px; background:var(--bg); border-radius:3px;}
+  #availNote{font-family:'IBM Plex Mono',monospace; font-size:11.5px; padding:8px 0; background:none; margin-top:8px;}
+
+  .consent-row{display:flex; align-items:flex-start; gap:10px; margin-top:18px; font-size:13.5px; color:var(--soft); line-height:1.6; cursor:pointer;}
+  .consent-row input{margin-top:3px; width:16px; height:16px; accent-color:var(--forest); flex-shrink:0; cursor:pointer;}
+  .consent-row a{color:var(--forest); text-decoration:underline; text-underline-offset:2px;}
+  .consent-row a:hover{color:var(--moss);}
+
+  .done-box{text-align:center; padding:24px 0;}
+  .done-ic{width:64px; height:64px; border-radius:50%; background:var(--free-h); color:var(--moss); display:flex; align-items:center; justify-content:center; font-size:30px; margin:0 auto 20px;}
+  .done-box h3{font-family:'Spectral',serif; font-size:27px; font-weight:500; margin-bottom:12px;}
+  .done-box p{font-size:15px; color:var(--soft); max-width:440px; margin:0 auto 6px; line-height:1.6;}
+  .done-box .contact-line{margin-top:20px; font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--forest);}
+
+  /* PHONE GUARD */
+  .phone-guard{display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:var(--forest); border:1px solid var(--line); padding:7px 13px; border-radius:2px; transition:border-color .2s, background .2s;}
+  .phone-guard:hover{border-color:var(--moss); background:var(--bg);}
+  .phone-check{display:inline-flex; align-items:center; gap:9px; font-size:13px; background:var(--bg); border:1px solid var(--line); padding:8px 11px; border-radius:2px;}
+  .phone-check input{width:40px; border:1px solid var(--line); border-radius:2px; padding:4px 6px; font-family:inherit; font-size:13px; text-align:center;}
+  .phone-check button{font-size:12.5px; font-weight:600; color:var(--forest); text-decoration:underline; text-underline-offset:2px;}
+  .phone-revealed{font-family:'IBM Plex Mono',monospace; font-weight:600; color:var(--forest);}
+
+  .pfoot{display:flex; justify-content:space-between; align-items:center; padding:24px 44px; border-top:1px solid var(--line); background:var(--bg);}
+  .back{font-size:14px; font-weight:500; color:var(--soft);}
+  .back:hover{color:var(--ink);} .back.hide{visibility:hidden;}
+  .next{background:var(--forest); color:var(--paper); padding:14px 32px; border-radius:2px; font-size:14.5px; font-weight:600; transition:background .25s;}
+  .next:hover{background:var(--forest-d);}
+  .next:disabled{opacity:0.4; cursor:not-allowed;}
+  @media (max-width:680px){ .pbody{padding:30px 24px;} .pfoot{padding:20px 24px;} }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="index.html" class="brand"><span class="nm">Apartmán PaVla</span><span class="loc">Moravany nad Váhom · Striebornica</span></a>
+    <a href="index.html" class="back-home">← Späť na web</a>
+  </nav>
+</header>
+
+<div class="head">
+  <div class="eyebrow">Rezervácia</div>
+  <h1>Rezervácia pobytu</h1>
+  <p>Vyberte termín, počet hostí a odošlite žiadosť.</p>
+</div>
+
+<div class="wrap">
+  <div class="steps">
+    <div class="pstep active" data-s="1"><span class="pn">1</span> Termín</div>
+    <div class="pstep" data-s="2"><span class="pn">2</span> Hostia</div>
+    <div class="pstep" data-s="3"><span class="pn">3</span> Kontakt</div>
+    <div class="pstep" data-s="4"><span class="pn">4</span> Súhrn</div>
+  </div>
+
+  <div class="panel">
+    <div class="pbody">
+
+      <!-- STEP 1: calendar -->
+      <div class="pane on" data-p="1">
+        <div class="cal-head">
+          <span class="flabel" style="margin:0;">Vyberte termín pobytu</span>
+          <div class="cal-nav">
+            <button onclick="calMove(-1)" aria-label="Predošlý mesiac">‹</button>
+            <button onclick="calMove(1)" aria-label="Ďalší mesiac">›</button>
+          </div>
+        </div>
+        <div class="cal-wrap" id="calWrap"></div>
+        <div class="snote" id="availNote" style="display:none;">Načítavam aktuálnu obsadenosť…</div>
+        <div class="cal-legend">
+          <span class="lg"><span class="sw free"></span> Voľné</span>
+          <span class="lg"><span class="sw busy"></span> Obsadené</span>
+          <span class="lg"><span class="sw sel"></span> Váš výber</span>
+        </div>
+        <div class="snote" style="margin-top:18px;">Minimálna dĺžka pobytu sú 2 noci.</div>
+        <div class="sel-summary" id="selSummary" style="display:none;">
+          <div><div class="ss-d" id="ssDates">—</div><div class="ss-n" id="ssNights">—</div></div>
+          <button onclick="clearSel()">Zrušiť výber</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: guests + price -->
+      <div class="pane" data-p="2">
+        <span class="flabel">Počet hostí</span>
+        <div class="cgroup">
+          <div class="cbox">
+            <div class="crow">
+              <div class="ct"><b>Dospelí</b><span>18+ rokov</span></div>
+              <div class="cc"><button class="cb" onclick="cc('a',-1)">−</button><span class="cv" id="av">2</span><button class="cb" onclick="cc('a',1)">+</button></div>
+            </div>
+          </div>
+          <div class="cbox">
+            <div class="crow">
+              <div class="ct"><b>Deti</b><span>0–17 rokov</span></div>
+              <div class="cc"><button class="cb" onclick="cc('c',-1)">−</button><span class="cv" id="cv">0</span><button class="cb" onclick="cc('c',1)">+</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="price-note">
+          <div class="pl" id="priceLabel">Cena za pobyt</div>
+          <div class="pv" id="priceVal">—</div>
+        </div>
+        <div class="snote">Cena: 50 € / noc pre 1–2 osoby, každá ďalšia osoba +15 € / noc. Kapacita je 2–7 osôb (vrátane 1 prístelky). Konečnú cenu potvrdí majiteľ.</div>
+      </div>
+
+      <!-- STEP 3: contact -->
+      <div class="pane" data-p="3">
+        <span class="flabel">Kontaktné údaje</span>
+        <div class="cgrid">
+          <div class="ibox"><label>Meno a priezvisko</label><input type="text" id="gn" placeholder="Jana Nováková"></div>
+          <div class="ibox"><label>Telefón</label><input type="tel" id="gp" placeholder="+421 9XX XXX XXX"></div>
+          <div class="ibox full"><label>E-mail</label><input type="email" id="ge" placeholder="meno@email.sk"></div>
+          <div class="ibox full"><label>Poznámka (nepovinné)</label><textarea id="gnote" rows="3" placeholder="Čas príchodu, otázky, želania…"></textarea></div>
+        </div>
+      </div>
+
+      <!-- STEP 4: summary -->
+      <div class="pane" data-p="4">
+        <div id="view-summary">
+          <span class="flabel">Súhrn žiadosti</span>
+          <div class="summary">
+            <div class="srow"><span class="l">Termín</span><span class="v" id="s_d">—</span></div>
+            <div class="srow"><span class="l">Počet nocí</span><span class="v" id="s_n">—</span></div>
+            <div class="srow"><span class="l">Hostia</span><span class="v" id="s_g">—</span></div>
+            <div class="srow"><span class="l">Kontakt</span><span class="v" id="s_c">—</span></div>
+            <div class="srow total"><span class="l">Orientačná cena</span><span class="v" id="s_p">—</span></div>
+          </div>
+          <div class="snote">Toto je nezáväzná žiadosť. Majiteľ vás kontaktuje, potvrdí dostupnosť a dohodnete sa na platbe (faktúra alebo hotovosť).</div>
+          <label class="consent-row">
+            <input type="checkbox" id="gdprConsent" onchange="val()">
+            <span>Súhlasím so spracovaním osobných údajov na účely vybavenia rezervácie. Viac v <a href="ochrana-osobnych-udajov.html" target="_blank" rel="noopener">ochrane osobných údajov</a>.</span>
+          </label>
+        </div>
+        <div id="view-done" style="display:none;">
+          <div class="done-box">
+            <div class="done-ic">✓</div>
+            <h3>Žiadosť odoslaná</h3>
+            <p>Ďakujeme! Ozveme sa vám čo najskôr a potvrdíme dostupnosť termínu aj cenu.</p>
+            <div class="contact-line">alebo zavolajte priamo: <span id="phoneGuardR" class="phone-slot" data-num="0948047399"></span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="pfoot">
+      <button class="back hide" id="back" onclick="prev()">← Späť</button>
+      <button class="next" id="next" onclick="adv()">Pokračovať →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Obsadené termíny sa načítavajú z Google Sheetu cez /api/availability.
+  // Majiteľ ich spravuje priamo v tabuľke — žiadna úprava kódu nie je potrebná.
+  let BLOCKED = [];
+
+  let step=1; const TOT=4;
+  const st={ci:null, co:null, nights:0, a:2, c:0, n:'',p:'',e:'',note:'', price:0};
+  const PRICE_BASE=50, PRICE_EXTRA=15; // 50€ do 2 osôb, +15€/os od 3.
+  const MIN_NIGHTS=2;
+  let busyDays=new Set(BLOCKED);
+  let done=false;
+
+  function ui(){
+    document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',+p.dataset.p===step));
+    document.querySelectorAll('.pstep').forEach(s=>{const n=+s.dataset.s; s.classList.toggle('active',n===step); s.classList.toggle('done',n<step);});
+    document.getElementById('back').classList.toggle('hide',step===1);
+    const nx=document.getElementById('next');
+    nx.textContent = step===TOT ? 'Odoslať žiadosť' : 'Pokračovať →';
+    nx.style.display = (step===TOT && done) ? 'none' : 'inline-flex';
+    val();
+  }
+  function val(){
+    const nx=document.getElementById('next'); let ok=true;
+    if(step===1) ok=st.ci&&st.co&&st.nights>=MIN_NIGHTS;
+    else if(step===3) ok=st.n.trim().length>1&&st.p.trim().length>5;
+    else if(step===4 && !done){ const c=document.getElementById('gdprConsent'); ok = !!(c && c.checked); }
+    nx.disabled=!ok;
+  }
+  function adv(){ if(step===TOT){ submit(); return; } step++; if(step===2) calcPrice(); if(step===4) summary(); ui(); scrollTo({top:0,behavior:'smooth'}); }
+  function prev(){ if(step>1){ step--; ui(); } }
+
+  // calendar
+  let calBase=new Date(); calBase.setDate(1);
+  const DOW=['Po','Ut','St','Št','Pi','So','Ne'];
+  const MON=['Január','Február','Marec','Apríl','Máj','Jún','Júl','August','September','Október','November','December'];
+  function ymd(d){ return d.toISOString().slice(0,10); }
+  function renderCal(){
+    const wrap=document.getElementById('calWrap'); wrap.innerHTML='';
+    for(let m=0;m<2;m++){ const base=new Date(calBase); base.setMonth(base.getMonth()+m); wrap.appendChild(buildMonth(base)); }
+    paintSel();
+  }
+  function buildMonth(base){
+    const y=base.getFullYear(), mo=base.getMonth();
+    const cal=document.createElement('div');
+    const title=document.createElement('div'); title.className='cal-mtitle'; title.textContent=`${MON[mo]} ${y}`; cal.appendChild(title);
+    const dow=document.createElement('div'); dow.className='cal-dow'; DOW.forEach(d=>{const s=document.createElement('span'); s.textContent=d; dow.appendChild(s);}); cal.appendChild(dow);
+    const grid=document.createElement('div'); grid.className='cal-grid';
+    let first=new Date(y,mo,1).getDay(); first=(first+6)%7;
+    const days=new Date(y,mo+1,0).getDate();
+    const today=new Date(); today.setHours(0,0,0,0);
+    for(let i=0;i<first;i++){ const e=document.createElement('div'); e.className='cday empty'; grid.appendChild(e); }
+    for(let dd=1;dd<=days;dd++){
+      const date=new Date(y,mo,dd); const key=ymd(date);
+      const cell=document.createElement('div'); cell.className='cday'; cell.textContent=dd; cell.dataset.key=key;
+      if(date<today) cell.classList.add('past');
+      else if(busyDays.has(key)) cell.classList.add('busy');
+      else{ cell.classList.add('free'); cell.onclick=()=>pickDay(key); }
+      grid.appendChild(cell);
+    }
+    cal.appendChild(grid); return cal;
+  }
+  function pickDay(key){
+    if(!st.ci || (st.ci&&st.co)){ st.ci=key; st.co=null; }
+    else if(key>st.ci){ if(rangeHasBusy(st.ci,key)){ st.ci=key; st.co=null; } else st.co=key; }
+    else { st.ci=key; st.co=null; }
+    recalc(); paintSel();
+  }
+  function rangeHasBusy(a,b){ let d=new Date(a); const e=new Date(b); while(d<e){ if(busyDays.has(ymd(d))) return true; d.setDate(d.getDate()+1);} return false; }
+  function recalc(){
+    st.nights=(st.ci&&st.co)?Math.round((new Date(st.co)-new Date(st.ci))/864e5):0;
+    const sum=document.getElementById('selSummary');
+    if(st.ci){ sum.style.display='flex';
+      document.getElementById('ssDates').textContent = st.co?`${fmt(st.ci)} → ${fmt(st.co)}`:`${fmt(st.ci)} → vyberte odchod`;
+      if(!st.co){ document.getElementById('ssNights').textContent='Vyberte deň odchodu'; document.getElementById('ssNights').style.color=''; }
+      else if(st.nights<MIN_NIGHTS){ document.getElementById('ssNights').textContent=`${st.nights} noc — minimum sú ${MIN_NIGHTS} noci`; document.getElementById('ssNights').style.color='var(--busy-ink)'; }
+      else { document.getElementById('ssNights').textContent=`${st.nights} nocí`; document.getElementById('ssNights').style.color=''; }
+    } else sum.style.display='none';
+    val();
+  }
+  function paintSel(){
+    document.querySelectorAll('.cday').forEach(c=>{ c.classList.remove('sel-start','sel-end','in-range');
+      const k=c.dataset.key; if(!k) return;
+      if(k===st.ci) c.classList.add('sel-start');
+      if(k===st.co) c.classList.add('sel-end');
+      if(st.ci&&st.co&&k>st.ci&&k<st.co) c.classList.add('in-range');
+    });
+  }
+  function clearSel(){ st.ci=null; st.co=null; st.nights=0; recalc(); paintSel(); }
+  function calMove(d){ calBase.setMonth(calBase.getMonth()+d); renderCal(); }
+  function fmt(k){ const [y,m,d]=k.split('-'); return `${d}.${m}.${y}`; }
+
+  // guests + price
+  function cc(t,d){
+    if(t==='a'){ const tot=st.a+st.c+d; if(st.a+d>=1 && tot<=7){ st.a+=d; } document.getElementById('av').textContent=st.a; }
+    else{ const tot=st.a+st.c+d; if(st.c+d>=0 && tot<=7){ st.c+=d; } document.getElementById('cv').textContent=st.c; }
+    calcPrice();
+  }
+  function calcPrice(){
+    const ppl=st.a+st.c;
+    const perNight = PRICE_BASE + Math.max(0, ppl-2)*PRICE_EXTRA;
+    st.price = perNight * (st.nights||0);
+    const pv=document.getElementById('priceVal'), pl=document.getElementById('priceLabel');
+    if(st.nights>0){ pv.innerHTML=`${st.price} € <small>/ ${st.nights} nocí</small>`; pl.textContent=`${perNight} € za noc · ${ppl} osôb`; }
+    else { pv.textContent=`${perNight} € / noc`; pl.textContent=`${ppl} osôb — vyberte termín pre celkovú cenu`; }
+  }
+
+  ['gn','gp','ge','gnote'].forEach(id=>document.getElementById(id).addEventListener('input',e=>{const m={gn:'n',gp:'p',ge:'e',gnote:'note'}; st[m[id]]=e.target.value; val();}));
+
+  function summary(){
+    calcPrice();
+    document.getElementById('s_d').textContent=(st.ci&&st.co)?`${fmt(st.ci)} → ${fmt(st.co)}`:'—';
+    document.getElementById('s_n').textContent=`${st.nights} nocí`;
+    let g=`${st.a} dospelí`; if(st.c>0) g+=`, ${st.c} deti`;
+    document.getElementById('s_g').textContent=g;
+    document.getElementById('s_c').textContent=`${st.n||'—'} · ${st.p||'—'}`;
+    document.getElementById('s_p').textContent=`${st.price} €`;
+  }
+
+  async function submit(){
+    // pošle žiadosť na /api/booking (Vercel) ak existuje, inak ostane v demo režime
+    try{
+      await fetch('/api/booking',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        checkin:st.ci, checkout:st.co, nights:st.nights, adults:st.a, children:st.c,
+        price:st.price, name:st.n, phone:st.p, email:st.e, note:st.note
+      })});
+    }catch(e){}
+    done=true;
+    document.getElementById('view-summary').style.display='none';
+    document.getElementById('view-done').style.display='block';
+    document.getElementById('back').classList.add('hide');
+    ui();
+  }
+
+  // ===== PHONE GUARD =====
+  function initPhoneGuards(){
+    document.querySelectorAll('.phone-slot').forEach(slot=>{
+      const num=slot.dataset.num;
+      const wrap=document.createElement('span');
+      const a=Math.floor(Math.random()*4)+2, b=Math.floor(Math.random()*4)+2;
+      function renderBtn(){
+        wrap.innerHTML='';
+        const btn=document.createElement('button'); btn.type='button'; btn.className='phone-guard';
+        btn.textContent='Zobraziť telefón';
+        btn.onclick=renderCheck;
+        wrap.appendChild(btn);
+      }
+      function renderCheck(){
+        wrap.innerHTML='';
+        const box=document.createElement('span'); box.className='phone-check';
+        box.innerHTML=`Koľko je ${a} + ${b}? <input type="text" inputmode="numeric" maxlength="2"> <button type="button">Potvrdiť</button>`;
+        const input=box.querySelector('input'), ok=box.querySelector('button');
+        function tryReveal(){ if(input.value.trim()===String(a+b)){ renderPhone(); } else { input.style.borderColor='#9A6A5E'; input.value=''; input.focus(); } }
+        ok.onclick=tryReveal;
+        input.addEventListener('keydown',e=>{ if(e.key==='Enter') tryReveal(); });
+        wrap.appendChild(box); input.focus();
+      }
+      function renderPhone(){
+        wrap.innerHTML='';
+        const a2=document.createElement('a'); a2.className='phone-revealed';
+        a2.href='tel:+421'+num.slice(1);
+        a2.textContent='+421 '+num.slice(1,4)+' '+num.slice(4,7)+' '+num.slice(7);
+        wrap.appendChild(a2);
+      }
+      renderBtn();
+      slot.replaceWith(wrap);
+    });
+  }
+  initPhoneGuards();
+
+  // ====== Načítanie obsadenosti z Google Sheetu (cez /api/availability) ======
+  async function loadAvailability(){
+    const note=document.getElementById('availNote');
+    note.style.display='block'; note.textContent='Načítavam aktuálnu obsadenosť…';
+    try{
+      const r=await fetch('/api/availability');
+      if(!r.ok) throw new Error('bad status');
+      const data=await r.json();
+      if(Array.isArray(data.busyDays)){
+        BLOCKED=data.busyDays;
+        busyDays=new Set(BLOCKED);
+      }
+      note.style.display='none';
+    }catch(e){
+      // Ak sa obsadenosť nepodarí načítať, kalendár zostane bez blokovaných dní —
+      // radšej zobrazíme upozornenie, než aby sa stránka nepoužiteľne zasekla.
+      note.textContent='Obsadenosť sa nepodarilo načítať. Termín si prosím overte telefonicky.';
+    }
+    renderCal();
+  }
+
+  loadAvailability(); ui();
+</script>
+
+</body>
+</html>

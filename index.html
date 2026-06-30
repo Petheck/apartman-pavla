@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apartmán PaVla — ubytovanie Moravany nad Váhom, pri Piešťanoch</title>
+<meta name="description" content="Apartmán pre 2–7 osôb v Moravanoch nad Váhom, lokalita Striebornica. 4 spálne, vlastná kuchyňa, parkovanie pri dome. Les a jazero Striebornica pár minút pešo, do Piešťan asi 6 km.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ECEBE3;
+    --paper:#F6F5EF;
+    --white:#FCFBF7;
+    --forest:#33422F;
+    --forest-d:#26321F;
+    --moss:#6E7C57;
+    --silver:#8298A0;
+    --silver-d:#5E767E;
+    --bark:#5C4632;
+    --ink:#272620;
+    --soft:#6B6A5E;
+    --line:#D8D6CB;
+    --line-soft:#E4E2D8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg); color:var(--ink); font-family:'Figtree',sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden;}
+  a{color:inherit; text-decoration:none;}
+  img{display:block; max-width:100%;}
+  button{font-family:inherit; cursor:pointer; border:none; background:none;}
+  .wrap{max-width:1200px; margin:0 auto; padding:0 32px;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  ::selection{background:var(--silver); color:var(--white);}
+  @media (prefers-reduced-motion: reduce){ *{animation:none !important; transition:none !important; scroll-behavior:auto !important;} }
+
+  /* NAV */
+  header{position:fixed; top:0; left:0; right:0; z-index:80; transition:background .4s, box-shadow .4s; }
+  header.scrolled{background:rgba(236,235,227,0.92); backdrop-filter:blur(10px); box-shadow:0 1px 0 var(--line);}
+  nav{display:flex; align-items:center; justify-content:space-between; padding:20px 32px; max-width:1200px; margin:0 auto;}
+  header:not(.scrolled) .brand .nm{color:var(--paper); text-shadow:0 1px 12px rgba(38,50,31,0.55);}
+  header:not(.scrolled) .brand .loc{color:rgba(246,245,239,0.85); text-shadow:0 1px 8px rgba(38,50,31,0.5);}
+  header:not(.scrolled) .nav-mid a{color:rgba(246,245,239,0.92); text-shadow:0 1px 10px rgba(38,50,31,0.5);}
+  header:not(.scrolled) .nav-mid a:hover{color:var(--white);}
+  .brand{display:flex; flex-direction:column; line-height:1;}
+  .brand .nm{font-family:'Spectral',serif; font-size:21px; font-weight:600; letter-spacing:0.01em;}
+  .brand .loc{font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:0.18em; text-transform:uppercase; color:var(--soft); margin-top:4px;}
+  .nav-mid{display:flex; gap:32px; font-size:14.5px; font-weight:500;}
+  .nav-mid a{color:var(--soft); transition:color .2s;}
+  .nav-mid a:hover{color:var(--ink);}
+  .nav-cta{background:var(--forest); color:var(--paper); padding:11px 20px; border-radius:2px; font-size:13.5px; font-weight:600; letter-spacing:0.01em; transition:background .25s;}
+  .nav-cta:hover{background:var(--forest-d);}
+  @media (max-width:900px){ .nav-mid{display:none;} nav{padding:16px 22px;} }
+
+  /* HERO */
+  .hero{position:relative; min-height:100vh; display:flex; align-items:flex-end; padding-bottom:60px; overflow:hidden;}
+  .hero-bg{position:absolute; inset:0; z-index:0;}
+  .hero-bg img{width:100%; height:100%; object-fit:cover;}
+  .hero-bg::after{content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(38,50,31,0.34) 0%, rgba(38,50,31,0.05) 35%, rgba(38,50,31,0.72) 100%);}
+  .hero-inner{position:relative; z-index:2; width:100%; color:var(--paper);}
+  .hero-eyebrow{display:inline-flex; align-items:center; gap:10px; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; margin-bottom:26px; color:rgba(246,245,239,0.95); text-shadow:0 1px 10px rgba(38,50,31,0.5);}
+  .hero-eyebrow .pin{width:6px; height:6px; border-radius:50%; background:var(--silver); box-shadow:0 0 0 4px rgba(130,152,160,0.3);}
+  .hero h1{font-family:'Spectral',serif; font-weight:500; font-size:clamp(44px,8vw,92px); line-height:0.98; letter-spacing:-0.01em; margin-bottom:24px; max-width:15ch;}
+  .hero h1 em{font-style:italic; color:#D6DEDA;}
+  .hero-foot{display:flex; justify-content:space-between; align-items:flex-end; gap:30px; flex-wrap:wrap;}
+  .hero-lead{font-size:18px; line-height:1.6; max-width:440px; color:rgba(246,245,239,0.92);}
+  .hero-cta{display:inline-flex; align-items:center; gap:11px; background:var(--paper); color:var(--forest); padding:17px 30px; border-radius:2px; font-size:15px; font-weight:600; transition:gap .3s, background .3s; white-space:nowrap;}
+  .hero-cta:hover{gap:18px; background:var(--white);}
+
+  /* INTRO */
+  .intro{padding:120px 0 90px; position:relative;}
+  .intro-grid{display:grid; grid-template-columns:1fr 1.1fr; gap:70px; align-items:center;}
+  .intro-photo{position:relative; border-radius:3px; overflow:hidden; aspect-ratio:4/5;}
+  .intro-photo img{width:100%; height:100%; object-fit:cover;}
+  .intro-photo .tag{position:absolute; left:16px; bottom:16px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--paper); background:rgba(38,50,31,0.62); padding:6px 12px; backdrop-filter:blur(4px);}
+  .eyebrow{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--silver-d); margin-bottom:20px; display:flex; align-items:center; gap:10px;}
+  .eyebrow::before{content:''; width:24px; height:1px; background:var(--silver-d);}
+  h2{font-family:'Spectral',serif; font-weight:500; font-size:clamp(30px,4.3vw,52px); line-height:1.08; letter-spacing:-0.01em;}
+  h2 em{font-style:italic; color:var(--moss);}
+  .intro p{font-size:16.5px; line-height:1.72; color:var(--soft); margin-top:22px;}
+  .intro p.big{font-size:18.5px; color:var(--ink); margin-top:24px;}
+  @media (max-width:880px){ .intro-grid{grid-template-columns:1fr; gap:40px;} .intro{padding:90px 0 70px;} }
+
+  /* FIELD NOTES (key facts) */
+  .facts{padding:60px 0;}
+  .facts-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:0; border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .fact{padding:34px 28px; border-right:1px solid var(--line); position:relative;}
+  .fact:last-child{border-right:none;}
+  .fact .fn{font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--silver-d); margin-bottom:16px;}
+  .fact .fv{font-family:'Spectral',serif; font-size:34px; font-weight:500; line-height:1; margin-bottom:8px;}
+  .fact .fl{font-size:13.5px; color:var(--soft);}
+  @media (max-width:760px){ .facts-grid{grid-template-columns:1fr 1fr;} .fact:nth-child(2){border-right:none;} .fact:nth-child(1),.fact:nth-child(2){border-bottom:1px solid var(--line);} }
+
+  /* SPACES */
+  .spaces{padding:100px 0;}
+  .spaces-head{display:flex; justify-content:space-between; align-items:flex-end; gap:30px; flex-wrap:wrap; margin-bottom:60px;}
+  .spaces-head .note{font-size:15px; color:var(--soft); max-width:320px; line-height:1.6;}
+  .spaces-grid{display:grid; grid-template-columns:repeat(12,1fr); gap:16px; grid-auto-rows:230px;}
+  .sp{position:relative; overflow:hidden; border-radius:3px;}
+  .sp img{width:100%; height:100%; object-fit:cover; transition:transform .7s cubic-bezier(.16,1,.3,1);}
+  .sp:hover img{transform:scale(1.05);}
+  .sp .cap{position:absolute; left:14px; bottom:14px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--paper); background:rgba(38,50,31,0.55); padding:6px 11px; backdrop-filter:blur(4px); opacity:0; transform:translateY(6px); transition:opacity .3s, transform .3s;}
+  .sp:hover .cap{opacity:1; transform:none;}
+  .sp.a{grid-column:span 7; grid-row:span 2;}
+  .sp.b{grid-column:span 5;}
+  .sp.c{grid-column:span 5;}
+  .sp.d{grid-column:span 4;}
+  .sp.e{grid-column:span 4;}
+  .sp.f{grid-column:span 4;}
+  .gal-more{margin-top:30px;}
+  .btn-line{display:inline-flex; align-items:center; gap:10px; font-size:14.5px; font-weight:600; color:var(--forest); border:1px solid var(--forest); padding:13px 26px; border-radius:2px; transition:background .25s, color .25s;}
+  .btn-line:hover{background:var(--forest); color:var(--paper);}
+  @media (max-width:880px){
+    .spaces-grid{grid-template-columns:repeat(2,1fr); grid-auto-rows:170px;}
+    .sp.a{grid-column:span 2; grid-row:span 2;} .sp.b,.sp.c,.sp.d,.sp.e,.sp.f{grid-column:span 1;}
+    .sp .cap{opacity:1; transform:none;}
+  }
+
+  /* AMENITIES */
+  .amen{padding:100px 0; background:var(--paper);}
+  .amen-grid{display:grid; grid-template-columns:0.8fr 1.2fr; gap:60px;}
+  .amen-list{display:grid; grid-template-columns:1fr 1fr; gap:0 48px;}
+  .amen-item{display:flex; align-items:baseline; gap:12px; padding:15px 0; border-top:1px solid var(--line-soft); font-size:15px;}
+  .amen-item:nth-child(1),.amen-item:nth-child(2){border-top:none;}
+  .amen-item .dot{width:5px; height:5px; border-radius:50%; background:var(--moss); flex-shrink:0; transform:translateY(-2px);}
+  @media (max-width:880px){ .amen-grid{grid-template-columns:1fr; gap:36px;} .amen-list{grid-template-columns:1fr;} .amen-item:nth-child(2){border-top:1px solid var(--line-soft);} }
+
+  /* AROUND (signature section — field guide / map) */
+  .around{padding:110px 0; position:relative; overflow:hidden;}
+  .around-head{max-width:640px; margin-bottom:64px;}
+  .around-list{display:flex; flex-direction:column;}
+  .around-row{display:grid; grid-template-columns:auto 1fr auto; gap:30px; align-items:center; padding:28px 0; border-top:1px solid var(--line); transition:padding-left .35s;}
+  .around-row:last-child{border-bottom:1px solid var(--line);}
+  .around-row:hover{padding-left:16px;}
+  .around-row .ar-ic{width:46px; height:46px; border-radius:50%; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; color:var(--silver-d); flex-shrink:0;}
+  .around-row .ar-ic svg{width:22px; height:22px;}
+  .around-row .ar-name{font-family:'Spectral',serif; font-size:clamp(20px,2.6vw,28px); font-weight:500;}
+  .around-row .ar-desc{font-size:13.5px; color:var(--soft); margin-top:3px; line-height:1.5;}
+  .around-row .ar-dist{font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.04em; color:var(--silver-d); white-space:nowrap; text-align:right;}
+  @media (max-width:680px){
+    .around-row{grid-template-columns:auto 1fr; gap:8px 16px;}
+    .around-row .ar-dist{grid-column:2; text-align:left; margin-top:6px;}
+  }
+
+  /* RULES */
+  .rules{padding:90px 0; background:var(--forest); color:var(--paper); position:relative; overflow:hidden;}
+  .rules h2{color:var(--paper);}
+  .rules .eyebrow{color:#A9BBA0;}
+  .rules .eyebrow::before{background:#A9BBA0;}
+  .rules-grid{display:grid; grid-template-columns:1fr 1fr; gap:50px; align-items:start; position:relative; z-index:2;}
+  .rules-list{display:flex; flex-direction:column; gap:0;}
+  .rule{display:flex; gap:16px; align-items:center; padding:17px 0; border-top:1px solid rgba(246,245,239,0.16); font-size:15.5px;}
+  .rule:last-child{border-bottom:1px solid rgba(246,245,239,0.16);}
+  .rule .ri{font-family:'IBM Plex Mono',monospace; font-size:12px; color:#A9BBA0; width:30px; flex-shrink:0;}
+  .rules-aside p{font-size:16px; line-height:1.7; color:rgba(246,245,239,0.85);}
+  @media (max-width:880px){ .rules-grid{grid-template-columns:1fr; gap:34px;} }
+
+  /* CTA / RESERVE */
+  .reserve{padding:110px 0;}
+  .reserve-box{position:relative; border-radius:4px; overflow:hidden; padding:80px 60px; color:var(--paper); text-align:center;}
+  .reserve-box img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;}
+  .reserve-box::after{content:''; position:absolute; inset:0; background:rgba(38,50,31,0.7); z-index:1;}
+  .reserve-box>*{position:relative; z-index:2;}
+  .reserve-box h2{color:var(--paper);}
+  .reserve-box p{font-size:17px; color:rgba(246,245,239,0.9); margin:20px auto 34px; max-width:480px; line-height:1.6;}
+  .reserve-box .hero-cta{background:var(--paper); color:var(--forest);}
+
+  /* LOCATION */
+  .loc{padding:100px 0 0;}
+  .loc-grid{display:grid; grid-template-columns:1fr 1.1fr; gap:56px; align-items:center; margin-bottom:90px;}
+  .loc-row{display:flex; gap:16px; padding:18px 0; border-top:1px solid var(--line);}
+  .loc-row:last-child{border-bottom:1px solid var(--line);}
+  .loc-row .lk{font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--soft); width:96px; flex-shrink:0; padding-top:3px;}
+  .loc-row .lv{font-size:15.5px; line-height:1.5;}
+  .loc-row a.lv:hover{color:var(--silver-d);}
+  .loc-map{border-radius:4px; overflow:hidden; aspect-ratio:1/1; border:1px solid var(--line);}
+  .loc-map iframe{width:100%; height:100%; border:0;}
+  @media (max-width:880px){ .loc-grid{grid-template-columns:1fr; gap:34px;} }
+
+  /* FOOTER */
+  footer{background:var(--forest-d); color:rgba(246,245,239,0.62); padding:56px 0 30px;}
+  .foot-grid{display:grid; grid-template-columns:1.6fr 1fr 1fr; gap:40px; padding-bottom:36px; border-bottom:1px solid rgba(246,245,239,0.12);}
+  .foot-brand .fn{font-family:'Spectral',serif; font-size:23px; font-weight:600; color:var(--paper); margin-bottom:10px;}
+  .foot-brand p{font-size:14px; line-height:1.7;}
+  .fcol h5{font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:rgba(246,245,239,0.45); margin-bottom:14px;}
+  .fcol a, .fcol p{display:block; font-size:14px; line-height:1.9; color:rgba(246,245,239,0.7);}
+  .fcol a:hover{color:var(--paper);}
+  .foot-bot{display:flex; justify-content:space-between; padding-top:22px; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.04em; flex-wrap:wrap; gap:10px;}
+  @media (max-width:760px){ .foot-grid{grid-template-columns:1fr 1fr; gap:28px;} .foot-brand{grid-column:1/-1;} }
+
+  /* PHONE GUARD — jednoduchá ochrana čísla proti botom */
+  .phone-guard{display:inline-flex; align-items:center; gap:9px; font-size:14.5px; font-weight:600; color:var(--forest); border:1px solid var(--line); padding:8px 14px; border-radius:2px; transition:border-color .2s, background .2s;}
+  .phone-guard:hover{border-color:var(--moss); background:var(--paper);}
+  .phone-guard svg{width:15px; height:15px; flex-shrink:0;}
+  .phone-check{display:inline-flex; align-items:center; gap:10px; font-size:13.5px; background:var(--paper); border:1px solid var(--line); padding:9px 12px; border-radius:2px;}
+  .phone-check input{width:44px; border:1px solid var(--line); border-radius:2px; padding:5px 7px; font-family:inherit; font-size:13.5px; text-align:center;}
+  .phone-check button{font-size:13px; font-weight:600; color:var(--forest); text-decoration:underline; text-underline-offset:2px;}
+  .phone-check .pg-err{color:#9A6A5E; font-size:12px;}
+  .phone-revealed{font-family:'IBM Plex Mono',monospace; font-weight:600; color:var(--forest);}
+  .phone-revealed:hover{color:var(--moss);}
+
+  /* phone guard on dark footer background needs light colors, not the default dark-on-light set */
+  footer .phone-guard{color:var(--paper); border-color:rgba(246,245,239,0.35);}
+  footer .phone-guard:hover{border-color:var(--paper); background:rgba(246,245,239,0.08);}
+  footer .phone-check{background:rgba(246,245,239,0.08); border-color:rgba(246,245,239,0.3); color:var(--paper);}
+  footer .phone-check input{background:rgba(246,245,239,0.08); border-color:rgba(246,245,239,0.35); color:var(--paper);}
+  footer .phone-check button{color:var(--paper);}
+  footer .phone-revealed{color:var(--paper);}
+  footer .phone-revealed:hover{color:#A9BBA0;}
+
+  /* LIGHTBOX */
+  .lb{position:fixed; inset:0; z-index:200; background:rgba(28,32,24,0.95); display:none; flex-direction:column; opacity:0; transition:opacity .25s;}
+  .lb.open{display:flex; opacity:1;}
+  .lb-bar{display:flex; justify-content:space-between; align-items:center; padding:18px 24px; color:var(--paper);}
+  .lb-count{font-family:'IBM Plex Mono',monospace; font-size:13px;}
+  .lb-close{width:40px; height:40px; border-radius:50%; background:rgba(246,245,239,0.12); color:var(--paper); font-size:19px; display:flex; align-items:center; justify-content:center;}
+  .lb-stage{flex:1; display:flex; align-items:center; justify-content:center; position:relative; padding:0 20px 12px; min-height:0;}
+  .lb-stage img{max-width:100%; max-height:100%; object-fit:contain; border-radius:3px;}
+  .lb-arrow{position:absolute; top:50%; transform:translateY(-50%); width:50px; height:50px; border-radius:50%; background:rgba(246,245,239,0.14); color:var(--paper); font-size:24px; display:flex; align-items:center; justify-content:center;}
+  .lb-prev{left:24px;} .lb-next{right:24px;}
+  .lb-thumbs{display:flex; gap:8px; overflow-x:auto; padding:14px 24px 22px;}
+  .lb-thumbs img{height:56px; width:80px; object-fit:cover; border-radius:3px; cursor:pointer; opacity:0.5; border:2px solid transparent;}
+  .lb-thumbs img.cur{opacity:1; border-color:var(--paper);}
+  body.lb-lock{overflow:hidden;}
+  @media (max-width:640px){ .lb-arrow{width:40px;height:40px;} .lb-prev{left:8px;} .lb-next{right:8px;} }
+
+  .rv{opacity:0; transform:translateY(22px); transition:opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1);}
+  .rv.in{opacity:1; transform:none;}
+  @media (max-width:600px){ .wrap{padding:0 22px;} }
+</style>
+</head>
+<body>
+
+<header id="hdr">
+  <nav>
+    <a href="index.html" class="brand"><span class="nm">Apartmán PaVla</span><span class="loc">Moravany nad Váhom · Striebornica</span></a>
+    <div class="nav-mid">
+      <a href="#ubytovanie">Ubytovanie</a>
+      <a href="#priestory">Priestory</a>
+      <a href="#okolie">Okolie</a>
+      <a href="#lokalita">Kontakt</a>
+    </div>
+    <a href="rezervacia.html" class="nav-cta">Rezervovať</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"><img src="images/exterior-house.jpg" alt="Apartmán PaVla — dom so záhradou pri lese"></div>
+  <div class="wrap hero-inner">
+    <div class="hero-eyebrow"><span class="pin"></span> Moravany nad Váhom, Striebornica</div>
+    <h1>Apartmán pre celú rodinu, na okraji dediny pri lese.</h1>
+    <div class="hero-foot">
+      <p class="hero-lead">Samostatný apartmán na prízemí rodinného domu, kúsok od lesa a jazera Striebornica. Vhodné pre rodiny, väčšie skupiny aj cyklistov.</p>
+      <a href="rezervacia.html" class="hero-cta">Pozrieť voľné termíny →</a>
+    </div>
+  </div>
+</section>
+
+<!-- INTRO -->
+<section class="intro" id="ubytovanie">
+  <div class="wrap intro-grid">
+    <div class="intro-photo rv">
+      <img src="images/map.jpg" alt="Zasklená terasa s posedením">
+      <span class="tag">Zasklená terasa</span>
+    </div>
+    <div class="rv">
+      <div class="eyebrow">O ubytovaní</div>
+      <h2>Pár minút od Piešťan, na okraji <em>Moravian nad Váhom</em>.</h2>
+      <p class="big">Apartmán PaVla sa nachádza na prízemí rodinného domu v lokalite Striebornica (smer Výtoky), na okraji Moravian nad Váhom. K lesu a jazeru je to len pár krokov, do Piešťan asi 6 km.</p>
+      <p>Apartmán máte k dispozícii celý len pre seba. Zmestí 2 až 7 osôb v štyroch izbách, má vlastnú kuchyňu, kúpeľňu a dve toalety. Vonku je posedenie a zasklená terasa, parkovanie priamo pri dome. Majiteľ býva na poschodí, takže v prípade potreby je nablízku.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FACTS -->
+<section class="facts">
+  <div class="wrap">
+    <div class="facts-grid rv">
+      <div class="fact"><div class="fn">Kapacita</div><div class="fv">2–7</div><div class="fl">osôb (1 prístelka)</div></div>
+      <div class="fact"><div class="fn">Priestor</div><div class="fv">4</div><div class="fl">spálne · 40–70 m²</div></div>
+      <div class="fact"><div class="fn">Cena od</div><div class="fv">50 €</div><div class="fl">/ min. 2 noci (1–2 osoby)</div></div>
+      <div class="fact"><div class="fn">Apartmán</div><div class="fv">Celý</div><div class="fl">len pre vás, samostatný vchod</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SPACES -->
+<section class="spaces" id="priestory">
+  <div class="wrap">
+    <div class="spaces-head rv">
+      <div>
+        <div class="eyebrow">Priestory</div>
+        <h2>Štyri spálne, kuchyňa a zasklená terasa.</h2>
+      </div>
+      <p class="note">Izby sú zariadené dreveným nábytkom, kuchyňa je plne vybavená, terasa má výhľad do záhrady.</p>
+    </div>
+    <div class="spaces-grid rv">
+      <div class="sp a" onclick="openLB(0)"><img src="images/living-room.jpg" alt="Obývacia izba"><span class="cap">Obývacia izba</span></div>
+      <div class="sp b" onclick="openLB(1)"><img src="images/kitchen.jpg" alt="Kuchyňa s jedálňou"><span class="cap">Kuchyňa</span></div>
+      <div class="sp c" onclick="openLB(2)"><img src="images/bedroom-double1.jpg" alt="Spálňa"><span class="cap">Spálňa</span></div>
+      <div class="sp d" onclick="openLB(3)"><img src="images/bedroom-double2.jpg" alt="Spálňa"><span class="cap">Spálňa</span></div>
+      <div class="sp e" onclick="openLB(4)"><img src="images/bathroom.jpg" alt="Kúpeľňa s vaňou"><span class="cap">Kúpeľňa</span></div>
+      <div class="sp f" onclick="openLB(5)"><img src="images/terrace-outside.jpg" alt="Terasa zvonku"><span class="cap">Terasa</span></div>
+    </div>
+    <div class="gal-more rv"><button class="btn-line" onclick="openLB(0)">Zobraziť všetky fotky →</button></div>
+  </div>
+</section>
+
+<!-- AMENITIES -->
+<section class="amen">
+  <div class="wrap amen-grid rv">
+    <div>
+      <div class="eyebrow">Vybavenie</div>
+      <h2>Čo je v apartmáne k dispozícii.</h2>
+      <p style="font-size:15.5px; color:var(--soft); line-height:1.7; margin-top:20px;">Kuchyňa je štandardne vybavená, posteľná bielizeň a uteráky sú v cene. WiFi v celom objekte.</p>
+    </div>
+    <div class="amen-list">
+      <div class="amen-item"><span class="dot"></span> Plne vybavená kuchyňa</div>
+      <div class="amen-item"><span class="dot"></span> Vaňa a kúpeľňa</div>
+      <div class="amen-item"><span class="dot"></span> Kávovar</div>
+      <div class="amen-item"><span class="dot"></span> Mikrovlnná rúra</div>
+      <div class="amen-item"><span class="dot"></span> Chladnička</div>
+      <div class="amen-item"><span class="dot"></span> Rýchlovarná kanvica</div>
+      <div class="amen-item"><span class="dot"></span> TV</div>
+      <div class="amen-item"><span class="dot"></span> WiFi zdarma</div>
+      <div class="amen-item"><span class="dot"></span> Posteľná bielizeň</div>
+      <div class="amen-item"><span class="dot"></span> Sušič vlasov</div>
+      <div class="amen-item"><span class="dot"></span> Sieťky proti komárom</div>
+      <div class="amen-item"><span class="dot"></span> Jedálenský stôl</div>
+      <div class="amen-item"><span class="dot"></span> Vonkajšie posedenie</div>
+      <div class="amen-item"><span class="dot"></span> Parkovanie pri dome</div>
+      <div class="amen-item"><span class="dot"></span> Úschova bicyklov</div>
+      <div class="amen-item"><span class="dot"></span> 2× toaleta</div>
+    </div>
+  </div>
+</section>
+
+<!-- AROUND (signature) -->
+<section class="around" id="okolie">
+  <div class="wrap" style="position:relative; z-index:2;">
+    <div class="around-head rv">
+      <div class="eyebrow">Čo je okolo</div>
+      <h2>Les, jazero a kúpele Piešťany neďaleko.</h2>
+    </div>
+    <div class="around-list rv">
+      <div class="around-row">
+        <div class="ar-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l4 7h-8zM12 8l5 9H7zM12 14l3 6H9z"/></svg></div>
+        <div><div class="ar-name">Jazero Striebornica</div><div class="ar-desc">Vodná nádrž s možnosťou kúpania a vodných športov.</div></div>
+        <div class="ar-dist">cca 5 min</div>
+      </div>
+      <div class="around-row">
+        <div class="ar-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 21V10l3-3 3 3v11M14 21V8l3-2 3 2v13M2 21h20"/></svg></div>
+        <div><div class="ar-name">Les &amp; Považský Inovec</div><div class="ar-desc">Turistické a cyklistické trasy hneď za záhradou.</div></div>
+        <div class="ar-dist">hneď vedľa</div>
+      </div>
+      <div class="around-row">
+        <div class="ar-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <div><div class="ar-name">Kúpele Piešťany</div><div class="ar-desc">Svetoznáme kúpeľné mesto s termálnou vodou a promenádou.</div></div>
+        <div class="ar-dist">~5 km</div>
+      </div>
+      <div class="around-row">
+        <div class="ar-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2a5 5 0 015 5c0 3-5 9-5 9S7 10 7 7a5 5 0 015-5zM5 22h14"/></svg></div>
+        <div><div class="ar-name">Moravianska Venuša</div><div class="ar-desc">Archeologický nález (vyše 23 000 rokov) a renesančný kaštieľ priamo v obci.</div></div>
+        <div class="ar-dist">v obci</div>
+      </div>
+      <div class="around-row">
+        <div class="ar-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M6 17l4-8h5l3 8M10 9l2-4h3"/></svg></div>
+        <div><div class="ar-name">Cyklotrasa Striebornica</div><div class="ar-desc">Napojenie na cyklotrasy Považského Inovca. Bicykle si uschováte na mieste.</div></div>
+        <div class="ar-dist">z obce</div>
+      </div>
+      <div class="around-row">
+        <div class="ar-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 17h20M4 17V9a2 2 0 012-2h12a2 2 0 012 2v8M8 7V5h8v2"/></svg></div>
+        <div><div class="ar-name">Kolonádový most</div><div class="ar-desc">Najdlhší krytý most na Slovensku, súčasť Kúpeľného ostrova v Piešťanoch.</div></div>
+        <div class="ar-dist">~5 km</div>
+      </div>
+      <div class="around-row">
+        <div class="ar-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 21V11l7-7 7 7v10M9 21v-6h6v6"/></svg></div>
+        <div><div class="ar-name">Vodná nádrž Sĺňava</div><div class="ar-desc">Kúpanie a vodné športy medzi Piešťanmi a Drahovcami.</div></div>
+        <div class="ar-dist">~7 km</div>
+      </div>
+      <div class="around-row">
+        <div class="ar-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 21h18M5 21V11l2-2v-3h10v3l2 2v10M9 21v-5h6v5M9 10h2M13 10h2M9 14h2M13 14h2"/></svg></div>
+        <div><div class="ar-name">Čachtický hrad</div><div class="ar-desc">Zrúcanina spätá s povesťami o grófke Bathoryovej, zrekonštruovaná v roku 2014.</div></div>
+        <div class="ar-dist">~25 km</div>
+      </div>
+      <div class="around-row">
+        <div class="ar-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 21h18M5 21V8l3-3 3 3v13M11 21V11l3-3 3 3v10"/></svg></div>
+        <div><div class="ar-name">Hrad Beckov</div><div class="ar-desc">Strážny hrad zo 13. storočia nad obcou Beckov, dnes prístupný verejnosti.</div></div>
+        <div class="ar-dist">~25 km</div>
+      </div>
+      <div class="around-row">
+        <div class="ar-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 17l4-4 4 4 4-7 4 4M3 21h18"/></svg></div>
+        <div><div class="ar-name">Rozhľadňa Marhát</div><div class="ar-desc">Panoramatický výhľad do troch krajov z vrchu v Považskom Inovci.</div></div>
+        <div class="ar-dist">~20 km</div>
+      </div>
+      <div class="around-row">
+        <div class="ar-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 21V10l8-6 8 6v11M4 21h16M9 21v-6h6v6"/></svg></div>
+        <div><div class="ar-name">Park miniatúr Podolie</div><div class="ar-desc">Vyše 70 zmenšených modelov slovenských hradov a pamiatok. Dobrý tip pre deti.</div></div>
+        <div class="ar-dist">~13 km</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RULES -->
+<section class="rules">
+  <div class="wrap rules-grid rv">
+    <div class="rules-aside">
+      <div class="eyebrow">Dobré vedieť</div>
+      <h2 style="margin-bottom:22px;">Pár pravidiel pre pobyt.</h2>
+      <p>V prípade otázok stačí zavolať, majiteľ býva priamo v dome.</p>
+    </div>
+    <div class="rules-list">
+      <div class="rule"><span class="ri">01</span> Fajčenie nie je povolené</div>
+      <div class="rule"><span class="ri">02</span> Oslavy a podujatia nie sú povolené</div>
+      <div class="rule"><span class="ri">03</span> Nočný kľud medzi 23:00 a 8:00</div>
+      <div class="rule"><span class="ri">04</span> Domáce zvieratá, žiaľ, nie sú povolené</div>
+      <div class="rule"><span class="ri">05</span> Bicykle je možné bezpečne uschovať</div>
+    </div>
+  </div>
+</section>
+
+<!-- RESERVE CTA -->
+<section class="reserve">
+  <div class="wrap">
+    <div class="reserve-box rv">
+      <img src="images/view-hills.jpg" alt="Výhľad na kopce">
+      <div class="eyebrow" style="justify-content:center; color:#A9BBA0;">Rezervácia</div>
+      <h2>Pozrite si voľné termíny.</h2>
+      <p>Vyberte termín, počet hostí a pošlite nezáväznú žiadosť. Ozveme sa vám a potvrdíme dostupnosť aj cenu.</p>
+      <a href="rezervacia.html" class="hero-cta">Rezervovať pobyt →</a>
+    </div>
+  </div>
+</section>
+
+<!-- LOCATION -->
+<section class="loc" id="lokalita">
+  <div class="wrap">
+    <div class="loc-grid rv">
+      <div>
+        <div class="eyebrow">Kontakt &amp; poloha</div>
+        <h2 style="margin-bottom:28px;">Kontakt a poloha</h2>
+        <div class="loc-row"><span class="lk">Adresa</span><span class="lv">Nádbrežná 3/10<br>Moravany nad Váhom · lokalita Striebornica</span></div>
+        <div class="loc-row"><span class="lk">Telefón</span><span class="lv"><span id="phoneGuard1" class="phone-slot" data-num="0948047399"></span></span></div>
+        <div class="loc-row"><span class="lk">Majiteľ</span><span class="lv">Vladimír Duran</span></div>
+        <div class="loc-row"><span class="lk">Platba</span><span class="lv">Faktúra alebo hotovosť</span></div>
+      </div>
+      <div class="loc-map">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1230.563011572143!2d17.885414761022506!3d48.60698678572322!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x476b53a38ee1de59%3A0x46f33e7886e6a513!2sApartm%C3%A1n%20PaVla!5e1!3m2!1ssk!2ssk!4v1782814778061!5m2!1ssk!2ssk" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot-grid">
+        <div class="foot-brand">
+          <div class="fn">Apartmán PaVla</div>
+          <p>Apartmán na okraji Moravian nad Váhom, lokalita Striebornica. Les a jazero pár minút pešo, do Piešťan asi 6 km.</p>
+        </div>
+        <div class="fcol">
+          <h5>Stránka</h5>
+          <a href="#ubytovanie">Ubytovanie</a>
+          <a href="#priestory">Priestory</a>
+          <a href="#okolie">Okolie</a>
+          <a href="rezervacia.html">Rezervácia</a>
+        </div>
+        <div class="fcol">
+          <h5>Kontakt</h5>
+          <span id="phoneGuard2" class="phone-slot" data-num="0948047399"></span>
+          <p>Vladimír Duran</p>
+          <p>Nádbrežná 3/10<br>Moravany nad Váhom</p>
+        </div>
+      </div>
+      <div class="foot-bot">
+        <span>© 2026 Apartmán PaVla</span>
+        <span><a href="ochrana-osobnych-udajov.html" style="color:inherit;">Ochrana osobných údajov</a> · Web: Kusov Digital</span>
+      </div>
+    </div>
+  </footer>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lb" id="lb" aria-hidden="true">
+  <div class="lb-bar">
+    <div class="lb-count"><span id="lbCur">1</span> / <span id="lbTot">0</span></div>
+    <button class="lb-close" onclick="closeLB()">✕</button>
+  </div>
+  <div class="lb-stage">
+    <button class="lb-arrow lb-prev" onclick="stepLB(-1)">‹</button>
+    <img id="lbImg" src="" alt="">
+    <button class="lb-arrow lb-next" onclick="stepLB(1)">›</button>
+  </div>
+  <div class="lb-thumbs" id="lbThumbs"></div>
+</div>
+
+<script>
+  const hdr=document.getElementById('hdr');
+  addEventListener('scroll',()=>hdr.classList.toggle('scrolled',scrollY>40));
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:0.1});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+  const GAL=[
+    ['images/living-room.jpg','Obývacia izba'],['images/kitchen.jpg','Kuchyňa s jedálňou'],
+    ['images/bedroom-double1.jpg','Spálňa'],['images/bedroom-double2.jpg','Spálňa'],
+    ['images/bathroom.jpg','Kúpeľňa s vaňou'],['images/terrace-outside.jpg','Terasa zvonku'],
+    ['images/bedroom-single.jpg','Spálňa'],['images/terrace.jpg','Zasklená terasa'],
+    ['images/exterior-garden.jpg','Dom a záhrada'],['images/exterior-house.jpg','Dom zvonku'],
+    ['images/view-hills.jpg','Výhľad na kopce'],['images/wc.jpg','Toaleta'],
+  ];
+  let li=0; const lb=document.getElementById('lb'), lbImg=document.getElementById('lbImg');
+  function thumbs(){const t=document.getElementById('lbThumbs'); t.innerHTML='';
+    GAL.forEach((g,i)=>{const im=document.createElement('img'); im.src=g[0]; im.alt=g[1]; im.loading='lazy'; im.onclick=()=>show(i); t.appendChild(im);});
+    document.getElementById('lbTot').textContent=GAL.length;}
+  function show(i){li=(i+GAL.length)%GAL.length; lbImg.src=GAL[li][0]; lbImg.alt=GAL[li][1];
+    document.getElementById('lbCur').textContent=li+1;
+    document.querySelectorAll('#lbThumbs img').forEach((el,x)=>{el.classList.toggle('cur',x===li); if(x===li)el.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});});}
+  function openLB(i){lb.classList.add('open'); lb.setAttribute('aria-hidden','false'); document.body.classList.add('lb-lock'); show(i||0);}
+  function closeLB(){lb.classList.remove('open'); lb.setAttribute('aria-hidden','true'); document.body.classList.remove('lb-lock');}
+  function stepLB(d){show(li+d);}
+  lb.addEventListener('click',e=>{if(e.target===lb||e.target.classList.contains('lb-stage'))closeLB();});
+  addEventListener('keydown',e=>{if(!lb.classList.contains('open'))return; if(e.key==='Escape')closeLB(); else if(e.key==='ArrowLeft')stepLB(-1); else if(e.key==='ArrowRight')stepLB(1);});
+  thumbs();
+
+  // ===== PHONE GUARD: číslo sa neukáže v HTML, kým človek neodpovie na jednoduchú otázku =====
+  function initPhoneGuards2(){
+    document.querySelectorAll('.phone-slot').forEach(slot=>{
+      const num = slot.dataset.num;
+      const wrap = document.createElement('span');
+      const a = Math.floor(Math.random()*4)+2, b = Math.floor(Math.random()*4)+2;
+      function renderBtn(){
+        wrap.innerHTML='';
+        const btn=document.createElement('button');
+        btn.type='button'; btn.className='phone-guard';
+        btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg> Zobraziť telefón';
+        btn.onclick=renderCheck;
+        wrap.appendChild(btn);
+      }
+      function renderCheck(){
+        wrap.innerHTML='';
+        const box=document.createElement('span'); box.className='phone-check';
+        box.innerHTML=`Koľko je ${a} + ${b}? <input type="text" inputmode="numeric" maxlength="2" aria-label="Overenie"> <button type="button">Potvrdiť</button>`;
+        const input=box.querySelector('input'), ok=box.querySelector('button');
+        function tryReveal(){
+          if(input.value.trim()===String(a+b)){ renderPhone(); }
+          else{ input.style.borderColor='#9A6A5E'; input.value=''; input.placeholder='?'; input.focus(); }
+        }
+        ok.onclick=tryReveal;
+        input.addEventListener('keydown',e=>{ if(e.key==='Enter') tryReveal(); });
+        wrap.appendChild(box);
+        input.focus();
+      }
+      function renderPhone(){
+        wrap.innerHTML='';
+        const a2=document.createElement('a');
+        a2.className='phone-revealed';
+        a2.href='tel:+421'+num.slice(1);
+        a2.textContent='+421 '+num.slice(1,4)+' '+num.slice(4,7)+' '+num.slice(7);
+        wrap.appendChild(a2);
+      }
+      renderBtn();
+      slot.replaceWith(wrap);
+    });
+  }
+  initPhoneGuards2();
+
+</script>
+
+</body>
+</html>
