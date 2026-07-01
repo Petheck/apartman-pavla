@@ -33,11 +33,11 @@ function isValidDate(s) {
 
 function expandRange(from, to) {
   const days = [];
-  let d = new Date(from);
-  const end = new Date(to);
+  let d = new Date(from + 'T00:00:00Z');
+  const end = new Date(to + 'T00:00:00Z');
   while (d <= end) {
     days.push(d.toISOString().slice(0, 10));
-    d.setDate(d.getDate() + 1);
+    d.setUTCDate(d.getUTCDate() + 1);
   }
   return days;
 }
