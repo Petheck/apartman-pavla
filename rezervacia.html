@@ -183,7 +183,7 @@
           <span class="lg"><span class="sw busy"></span> Obsadené</span>
           <span class="lg"><span class="sw sel"></span> Váš výber</span>
         </div>
-        <div class="snote" style="margin-top:18px;">Minimálna dĺžka pobytu sú 2 noci.</div>
+        <div class="snote" style="margin-top:18px;">Minimálna dĺžka pobytu sú 2 noci. Rezervovať sa dá najviac 3 mesiace dopredu.</div>
         <div class="sel-summary" id="selSummary" style="display:none;">
           <div><div class="ss-d" id="ssDates">—</div><div class="ss-n" id="ssNights">—</div></div>
           <button onclick="clearSel()">Zrušiť výber</button>
@@ -222,6 +222,11 @@
           <div class="ibox"><label>Telefón</label><input type="tel" id="gp" placeholder="+421 9XX XXX XXX"></div>
           <div class="ibox full"><label>E-mail</label><input type="email" id="ge" placeholder="meno@email.sk"></div>
           <div class="ibox full"><label>Poznámka (nepovinné)</label><textarea id="gnote" rows="3" placeholder="Čas príchodu, otázky, želania…"></textarea></div>
+        </div>
+        <!-- Honeypot pole proti botom — bežný používateľ ho nevidí, bot ho vyplní. -->
+        <div style="position:absolute; left:-9999px; top:-9999px;" aria-hidden="true">
+          <label for="website">Nechajte prázdne</label>
+          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
         </div>
       </div>
 
@@ -294,6 +299,8 @@
 
   // calendar
   let calBase=new Date(); calBase.setDate(1);
+  const MAX_MONTHS_AHEAD=3;
+  const maxBookDate=new Date(); maxBookDate.setMonth(maxBookDate.getMonth()+MAX_MONTHS_AHEAD); maxBookDate.setHours(0,0,0,0);
   const DOW=['Po','Ut','St','Št','Pi','So','Ne'];
   const MON=['Január','Február','Marec','Apríl','Máj','Jún','Júl','August','September','Október','November','December'];
   function ymd(d){ const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), dd=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${dd}`; }
@@ -317,6 +324,7 @@
       const date=new Date(y,mo,dd); const key=ymd(date);
       const cell=document.createElement('div'); cell.className='cday'; cell.textContent=dd; cell.dataset.key=key;
       if(date<today) cell.classList.add('past');
+      else if(date>maxBookDate) cell.classList.add('past'); // mimo rezervačného okna (max 3 mesiace dopredu)
       else if(busyDays.has(key)) cell.classList.add('busy');
       else{ cell.classList.add('free'); cell.onclick=()=>pickDay(key); }
       grid.appendChild(cell);
@@ -350,7 +358,12 @@
     });
   }
   function clearSel(){ st.ci=null; st.co=null; st.nights=0; recalc(); paintSel(); }
-  function calMove(d){ calBase.setMonth(calBase.getMonth()+d); renderCal(); }
+  function calMove(d){
+    const next=new Date(calBase); next.setMonth(next.getMonth()+d);
+    const limit=new Date(maxBookDate.getFullYear(), maxBookDate.getMonth()+1, 1); // mesiac hneď za oknom
+    if(d>0 && next>=limit) return;
+    calBase.setMonth(calBase.getMonth()+d); renderCal();
+  }
   function fmt(k){ const [y,m,d]=k.split('-'); return `${d}.${m}.${y}`; }
 
   // guests + price
@@ -382,10 +395,11 @@
 
   async function submit(){
     // pošle žiadosť na /api/booking (Vercel) ak existuje, inak ostane v demo režime
+    const honeypot=document.getElementById('website')?.value||'';
     try{
       await fetch('/api/booking',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
         checkin:st.ci, checkout:st.co, nights:st.nights, adults:st.a, children:st.c,
-        price:st.price, name:st.n, phone:st.p, email:st.e, note:st.note
+        price:st.price, name:st.n, phone:st.p, email:st.e, note:st.note, website:honeypot
       })});
     }catch(e){}
     done=true;
