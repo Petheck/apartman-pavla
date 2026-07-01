@@ -296,7 +296,8 @@
   let calBase=new Date(); calBase.setDate(1);
   const DOW=['Po','Ut','St','Št','Pi','So','Ne'];
   const MON=['Január','Február','Marec','Apríl','Máj','Jún','Júl','August','September','Október','November','December'];
-  function ymd(d){ return d.toISOString().slice(0,10); }
+  function ymd(d){ const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), dd=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${dd}`; }
+  function parseYmd(key){ const [y,m,d]=key.split('-').map(Number); return new Date(y,m-1,d); }
   function renderCal(){
     const wrap=document.getElementById('calWrap'); wrap.innerHTML='';
     for(let m=0;m<2;m++){ const base=new Date(calBase); base.setMonth(base.getMonth()+m); wrap.appendChild(buildMonth(base)); }
@@ -328,7 +329,7 @@
     else { st.ci=key; st.co=null; }
     recalc(); paintSel();
   }
-  function rangeHasBusy(a,b){ let d=new Date(a); const e=new Date(b); while(d<e){ if(busyDays.has(ymd(d))) return true; d.setDate(d.getDate()+1);} return false; }
+  function rangeHasBusy(a,b){ let d=parseYmd(a); const e=parseYmd(b); while(d<e){ if(busyDays.has(ymd(d))) return true; d.setDate(d.getDate()+1);} return false; }
   function recalc(){
     st.nights=(st.ci&&st.co)?Math.round((new Date(st.co)-new Date(st.ci))/864e5):0;
     const sum=document.getElementById('selSummary');
